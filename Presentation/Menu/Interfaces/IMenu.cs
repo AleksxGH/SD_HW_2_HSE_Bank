@@ -13,6 +13,11 @@ namespace Presentation.Menu.Interfaces
         string Name { get; }
 
         /// <summary>
+        /// Заголовок меню.
+        /// </summary>
+        string Label { get; }
+
+        /// <summary>
         /// Все команды в меню.
         /// </summary>
         public IEnumerable<ICommand> Commands { get; }

@@ -1,56 +1,66 @@
-﻿using Spectre.Console;
-using Presentation.Commands.Interfaces;
+﻿using Presentation.Commands.Interfaces;
 using Presentation.Menu.Interfaces;
+using Spectre.Console;
 
 namespace Presentation.Menu
 {
     /// <summary>
-    /// Главное меню приложения.
+    /// Абстрактный базовый класс для всех разделов меню.
+    /// Содержит общую логику отображения, навигации и выполнения команд.
     /// </summary>
-    public class MainMenu : IMenu
+    public abstract class MenuSection : IMenu
     {
         private readonly List<ICommand> _commands = [];
         private readonly List<IMenu> _sections = [];
 
-        public string Name => "Главное меню";
-        public string Label => "HSE Bank";
-
-        public IEnumerable<ICommand> Commands => _commands;
-
-        public IEnumerable<IMenu> Sections => _sections;
+        /// <summary>
+        /// Название раздела меню (отображается в списке).
+        /// </summary>
+        public abstract string Name { get; }
 
         /// <summary>
-        /// Добавить команду 
+        /// Заголовок раздела (используется в Figlet).
         /// </summary>
-        public void AddCommand(ICommand command)
-        {
-            if (command == null)
-                throw new ArgumentNullException(nameof(command));
+        public abstract string Label { get; }
 
+        /// <summary>
+        /// Команды, доступные в меню.
+        /// </summary>
+        public IEnumerable<ICommand> Commands => _commands.AsReadOnly();
+
+        /// <summary>
+        /// Подразделы текущего меню.
+        /// </summary>
+        public IEnumerable<IMenu> Sections => _sections.AsReadOnly();
+
+        /// <summary>
+        /// Добавляет новую команду в меню.
+        /// </summary>
+        public virtual void AddCommand(ICommand command)
+        {
+            ArgumentNullException.ThrowIfNull(command);
             _commands.Add(command);
         }
 
         /// <summary>
-        /// Добавить раздел меню (подменю).
+        /// Добавляет вложенный раздел в меню.
         /// </summary>
-        public void AddSection(IMenu section)
+        public virtual void AddSection(IMenu section)
         {
-            if (section == null)
-                throw new ArgumentNullException(nameof(section));
-
+            ArgumentNullException.ThrowIfNull(section);
             _sections.Add(section);
         }
 
         /// <summary>
-        /// Отображение главного меню и навигация по разделам.
+        /// Отображает меню и обрабатывает выбор пользователя.
         /// </summary>
-        public void Show()
+        public virtual void Show()
         {
             while (true)
             {
                 AnsiConsole.Clear();
 
-                // Заголовок
+                // --- Заголовок ---
                 var figlet = new FigletText(Label).Color(Color.Teal);
                 AnsiConsole.Write(new Align(figlet, HorizontalAlignment.Center));
                 AnsiConsole.WriteLine();
@@ -58,28 +68,24 @@ namespace Presentation.Menu
                 AnsiConsole.MarkupLine($"[white]{Name}[/]");
                 AnsiConsole.WriteLine();
 
-                // Список пунктов меню
+                // --- Формируем список пунктов меню ---
                 var menuChoices = _sections.Select(s => s.Name)
                     .Concat(_commands.Select(c => c.Name))
-                    .Concat(["Выход"])
+                    .Concat(["Назад"])
                     .ToList();
 
                 var choice = AnsiConsole.Prompt(
                     new SelectionPrompt<string>()
-                        .Title("[teal]Выберите раздел:[/]")
+                        .Title("[teal]Выберите действие:[/]")
                         .PageSize(10)
                         .HighlightStyle(new Style(Color.Teal))
                         .AddChoices(menuChoices)
                 );
 
-                if (choice == "Выход")
-                {
-                    AnsiConsole.Clear();
-                    AnsiConsole.MarkupLine("[red]Сессия завершена.[/]");
-                    break;
-                }
+                // --- Обработка выбора ---
+                if (choice == "Назад")
+                    return;
 
-                // Если выбрали подменю
                 var selectedSection = _sections.FirstOrDefault(s => s.Name == choice);
                 if (selectedSection != null)
                 {
@@ -87,7 +93,6 @@ namespace Presentation.Menu
                     continue;
                 }
 
-                // Если выбрали команду
                 var selectedCommand = _commands.FirstOrDefault(c => c.Name == choice);
                 if (selectedCommand != null)
                 {
@@ -101,9 +106,9 @@ namespace Presentation.Menu
         }
 
         /// <summary>
-        /// Выполнение команды с обработкой ошибок и выводом результата.
+        /// Выполняет выбранную команду с обработкой ошибок и выводом результата.
         /// </summary>
-        private void ExecuteCommand(ICommand command)
+        protected virtual void ExecuteCommand(ICommand command)
         {
             try
             {
@@ -113,14 +118,14 @@ namespace Presentation.Menu
 
                 command.Execute();
 
-                AnsiConsole.MarkupLine("[green]Команда выполнена успешно![/]");
+                AnsiConsole.MarkupLine("[green]Команда успешно выполнена![/]");
             }
             catch (Exception ex)
             {
                 AnsiConsole.MarkupLineInterpolated($"[red]Ошибка: {ex.Message}[/]");
             }
 
-            AnsiConsole.MarkupLine("[grey]Нажмите любую клавишу для возврата... [/]");
+            AnsiConsole.MarkupLine("[grey]Нажмите любую клавишу для возврата...[/]");
             Console.ReadKey(true);
         }
     }

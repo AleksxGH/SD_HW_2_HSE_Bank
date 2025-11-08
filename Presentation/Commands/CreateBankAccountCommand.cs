@@ -18,8 +18,8 @@ namespace Presentation.Commands
         public void Execute()
         {
             bool enterFlag = false;
-            string name = string.Empty;
-            decimal amount = 0;
+            string name;
+            decimal amount;
 
             do
             {
@@ -35,8 +35,6 @@ namespace Presentation.Commands
                     break;
                 }
             } while (!enterFlag);
-
-            enterFlag = false;
 
             do
             {
