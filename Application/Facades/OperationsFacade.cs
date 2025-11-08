@@ -74,6 +74,10 @@ namespace Application.Facades
         /// <returns></returns>
         public IOperation CreateOperation(OperationType type, Guid accountId, decimal amount, Guid categoryId, string? description = null)
         {
+            if (!_accountsRepository.Exists(accountId))
+                throw new ArgumentException("Банковский счет не найден.");
+            if (!_categoriesRepository.Exists(categoryId))
+                throw new ArgumentException("Категория не найдена.");
             var operation = _factory.CreateOperation(type, accountId, amount, categoryId, description);
             _operationsRepository.Add(operation);
             ApplyOperation(operation);
@@ -90,6 +94,10 @@ namespace Application.Facades
         public IOperation RestoreOperation(Guid id, OperationType type, Guid accountId, decimal amount, 
             DateTime date, Guid categoryId, string? description = null)
         {
+            if (!_accountsRepository.Exists(accountId))
+                throw new ArgumentException("Банковский счет не найден.");
+            if (!_categoriesRepository.Exists(categoryId))
+                throw new ArgumentException("Категория не найдена.");
             var operation = _factory.RestoreOperation(id, type, accountId, amount, date, categoryId, description);
             _operationsRepository.Add(operation);
             return operation;
@@ -102,6 +110,10 @@ namespace Application.Facades
         /// <returns></returns>
         public IOperation? GetOperationById(Guid id)
         {
+            if (id == Guid.Empty)
+            {
+                return null;
+            }
             return _operationsRepository.GetById(id);
         }
 
@@ -121,6 +133,11 @@ namespace Application.Facades
         /// <returns></returns>
         public IEnumerable<IOperation> GetOperationsByAccountId(Guid bankAccountId)
         {
+            if (bankAccountId == Guid.Empty)
+                throw new ArgumentException("Идентификатор банковского счета некорректен.");
+            if (_accountsRepository.GetById(bankAccountId) == null)
+                throw new ArgumentException("Банковский счет не найден.");
+
             return _operationsRepository.GetOperationsByBankAccountId(bankAccountId);
         }
 
@@ -173,6 +190,9 @@ namespace Application.Facades
 
         public void UpdateOperationAccountId(Guid operationId, Guid bankAccountId)
         {
+            if (!_accountsRepository.Exists(bankAccountId))
+                throw new ArgumentException("Банковский счет не найден.");
+
             var operation = _operationsRepository.GetById(operationId);
             if (operation != null)
             {
@@ -191,6 +211,9 @@ namespace Application.Facades
         /// <param name="newAmount"></param>
         public void UpdateOperationAmount(Guid id, decimal newAmount)
         {
+            if (newAmount < 0)
+                throw new ArgumentException("Сумма операции не может быть отрицательной.");
+
             var operation = _operationsRepository.GetById(id);
             if (operation != null)
             {
@@ -209,6 +232,9 @@ namespace Application.Facades
         /// <param name="newDate"></param>
         public void UpdateOperationDate(Guid id, DateTime newDate)
         {
+            if (newDate > DateTime.Now)
+                throw new ArgumentException("Дата операции некорректна.");
+
             var operation = _operationsRepository.GetById(id);
             if (operation != null)
             {
@@ -226,6 +252,9 @@ namespace Application.Facades
         /// <param name="newCategoryId"></param>
         public void UpdateOperationCategoryId(Guid id, Guid newCategoryId)
         {
+            if (!_categoriesRepository.Exists(newCategoryId))
+                throw new ArgumentException("Категория не найдена.");
+
             var operation = _operationsRepository.GetById(id);
             if (operation != null)
             {
