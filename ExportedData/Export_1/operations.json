@@ -1,0 +1,11 @@
+[
+  {
+    "Id": "fc3f8e64-1150-46cd-9ce6-08f47c3c38f7",
+    "Type": 0,
+    "BankAccountId": "b15b56ac-26bd-4531-86ae-a889d9768e99",
+    "Amount": 100,
+    "Date": "2025-11-08T21:52:51.4090581+03:00",
+    "CategoryId": "5bf5b534-c91d-4747-afca-7af80f49abbd",
+    "Description": "Test description"
+  }
+]

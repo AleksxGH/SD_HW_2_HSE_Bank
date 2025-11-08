@@ -1,4 +1,10 @@
-﻿using Infrastructure.Repositories.Interfaces;
+﻿//Дисциплина: "Конструирование программного обеспечения"
+//Домашняя работа №2 
+//Группа: БПИ248-1
+//Студент: Мищенко Александр
+//Дата: 04.11.2025
+
+using Infrastructure.Repositories.Interfaces;
 using Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Presentation.Commands.Decorators;
