@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Interfaces;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
@@ -40,11 +41,13 @@ namespace Domain.Entities
         /// <param name="id"></param>
         /// <param name="name"></param>
         /// <param name="initialBalance"></param>
-        public BankAccount(Guid id, string name, decimal initialBalance = 0)
+        
+        [JsonConstructor]
+        public BankAccount(Guid Id, string Name, decimal Balance)
         {
-            Id = id;
-            Name = name;
-            Balance = initialBalance;
+            this.Id = Id;
+            this.Name = Name;
+            this.Balance = Balance;
         }
 
         /// <summary>

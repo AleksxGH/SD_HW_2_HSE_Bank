@@ -10,8 +10,8 @@ using Application.Facades.Interfaces;
 using Application.Facades;
 using Presentation.Menu.Interfaces;
 using Presentation.Commands.Interfaces;
-using Application.Export.Template;
 using Application.Export;
+using Application.Import;
 
 namespace HSE_Bank
 {
@@ -45,6 +45,19 @@ namespace HSE_Bank
             services.AddTransient<OperationsMenu>();
             services.AddTransient<ExportMenu>();
 
+            // --- Импорт ---
+            services.AddTransient<JsonImporter>();
+
+            services.AddTransient<ImportAllJsonCommand>(sp =>
+                new ImportAllJsonCommand(
+                    sp.GetRequiredService<IBankAccountsRepository>(),
+                    sp.GetRequiredService<ICategoriesRepository>(),
+                    sp.GetRequiredService<IOperationsRepository>(),
+                    sp.GetRequiredService<JsonImporter>()
+                )
+            );
+
+
             // --- Экспорт ---
             services.AddTransient<JsonExporter>(sp =>
             {
@@ -62,6 +75,8 @@ namespace HSE_Bank
 
 
             // --- Команды и декораторы ---
+            services.AddTransient<ImportAllJsonCommand>();
+
             services.AddTransient<CreateBankAccountCommand>();
             services.AddTransient<ViewAllBankAccountsCommand>();
             services.AddTransient<RenameBankAccountCommand>();
@@ -80,6 +95,8 @@ namespace HSE_Bank
             services.AddTransient<ChangeOperationsAmountCommand>();
 
             // Регистрируем декорированные команды как ICommand
+            services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<ImportAllJsonCommand>()));
+
             services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<CreateBankAccountCommand>()));
             services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<ViewAllBankAccountsCommand>()));
             services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<RenameBankAccountCommand>()));
@@ -120,6 +137,8 @@ namespace HSE_Bank
             var decoratedCommands = provider.GetServices<ICommand>().ToList();
 
             // Добавляем нужные команды в меню
+            importMenu.AddCommand(decoratedCommands.First(c => c.Name == "Импортировать все данные из JSON"));
+
             accountsMenu.AddCommand(decoratedCommands.First(c => c.Name == "Создать новый банковский счет"));
             accountsMenu.AddCommand(decoratedCommands.First(c => c.Name == "Просмотреть все банковские счета"));
             accountsMenu.AddCommand(decoratedCommands.First(c => c.Name == "Переименовать банковский счет"));

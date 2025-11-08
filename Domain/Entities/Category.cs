@@ -1,5 +1,6 @@
 ﻿using Domain.Entities.Interfaces;
 using Domain.Enums;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
@@ -41,11 +42,13 @@ namespace Domain.Entities
         /// <param name="id"></param>
         /// <param name="name"></param>
         /// <param name="type"></param>
-        public Category(Guid id, string name, CategoryType type)
+
+        [JsonConstructor]
+        public Category(Guid Id, string Name, CategoryType Type)
         {
-            Id = id;
-            Name = name;
-            Type = type;
+            this.Id = Id;
+            this.Name = Name;
+            this.Type = Type;
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using Domain.Entities.Interfaces;
 using Domain.Enums;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
@@ -72,15 +73,17 @@ namespace Domain.Entities
         /// <param name="date"></param>
         /// <param name="categoryId"></param>
         /// <param name="description"></param>
-        public Operation(Guid id, OperationType type, Guid bankAccountId, decimal amount, DateTime date, Guid categoryId, string? description)
+        
+        [JsonConstructor]
+        public Operation(Guid Id, OperationType Type, Guid BankAccountId, decimal Amount, DateTime Date, Guid CategoryId, string? Description)
         {
-            Id = id;
-            Type = type;
-            BankAccountId = bankAccountId;
-            Amount = amount;
-            Date = date;
-            CategoryId = categoryId;
-            Description = description;
+            this.Id = Id;
+            this.Type = Type;
+            this.BankAccountId = BankAccountId;
+            this.Amount = Amount;
+            this.Date = Date;
+            this.CategoryId = CategoryId;
+            this.Description = Description;
         }
 
 

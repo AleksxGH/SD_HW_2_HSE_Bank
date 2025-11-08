@@ -21,7 +21,7 @@ namespace Application.Export
             string exportFolder;
             do
             {
-                exportFolder = Path.Combine(OutputFolder, $"Export_{i}_({DateTime.Now:g})");
+                exportFolder = Path.Combine(OutputFolder, $"Export_{i}");
                 i++;
             } while (Directory.Exists(exportFolder));
 
