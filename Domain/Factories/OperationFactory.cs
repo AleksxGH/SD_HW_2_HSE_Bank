@@ -2,7 +2,6 @@
 using Domain.Entities.Interfaces;
 using Domain.Entities;
 using Domain.Enums;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Domain.Factories
 {
