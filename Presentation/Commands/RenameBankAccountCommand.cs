@@ -64,7 +64,7 @@ namespace Presentation.Commands
             var table = new Table()
                 .Border(TableBorder.Rounded)
                 .Expand()
-                .Title("[bold white]Банковский счёт переименован![/]")
+                .Title("[bold white]Банковский счёт успешно переименован![/]")
                 .AddColumn("[bold teal]Название[/]")
                 .AddColumn("[bold teal]ID[/]")
                 .AddColumn("[bold teal]Баланс[/]");

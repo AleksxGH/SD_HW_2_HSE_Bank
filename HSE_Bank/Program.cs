@@ -48,16 +48,24 @@ namespace HSE_Bank
             services.AddTransient<ViewAllBankAccountsCommand>();
             services.AddTransient<RenameBankAccountCommand>();
             services.AddTransient<DeleteBankAccountCommand>();
+            services.AddTransient<CreateCategoryCommand>();
+            services.AddTransient<ViewAllCategoriesCommand>();
+            services.AddTransient<RenameCategoryCommand>();
+            services.AddTransient<ChangeCategoryTypeCommand>();
+            services.AddTransient<DeleteCategoryCommand>();
 
             // Регистрируем декорированные команды как ICommand
-            services.AddTransient<ICommand>(sp =>
-                new TimedCommandDecorator(sp.GetRequiredService<CreateBankAccountCommand>()));
-            services.AddTransient<ICommand>(sp =>
-                new TimedCommandDecorator(sp.GetRequiredService<ViewAllBankAccountsCommand>()));
-            services.AddTransient<ICommand>(sp =>
-                new TimedCommandDecorator(sp.GetRequiredService<RenameBankAccountCommand>()));
-            services.AddTransient<ICommand>(sp =>
-                new TimedCommandDecorator(sp.GetRequiredService<DeleteBankAccountCommand>()));
+            services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<CreateBankAccountCommand>()));
+            services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<ViewAllBankAccountsCommand>()));
+            services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<RenameBankAccountCommand>()));
+            services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<DeleteBankAccountCommand>()));
+            services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<CreateCategoryCommand>()));
+            services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<ViewAllCategoriesCommand>()));
+            services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<RenameCategoryCommand>()));
+            services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<ChangeCategoryTypeCommand>()));
+            services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<DeleteCategoryCommand>()));
+
+
 
             var provider = services.BuildServiceProvider();
 
@@ -84,6 +92,11 @@ namespace HSE_Bank
             accountsMenu.AddCommand(decoratedCommands.First(c => c.Name == "Просмотреть все банковские счета"));
             accountsMenu.AddCommand(decoratedCommands.First(c => c.Name == "Переименовать банковский счет"));
             accountsMenu.AddCommand(decoratedCommands.First(c => c.Name == "Удалить банковский счет"));
+            categoriesMenu.AddCommand(decoratedCommands.First(c => c.Name == "Создать новую категорию"));
+            categoriesMenu.AddCommand(decoratedCommands.First(c => c.Name == "Просмотреть все категории"));
+            categoriesMenu.AddCommand(decoratedCommands.First(c => c.Name == "Переименовать категорию"));
+            categoriesMenu.AddCommand(decoratedCommands.First(c => c.Name == "Изменить тип категории"));
+            categoriesMenu.AddCommand(decoratedCommands.First(c => c.Name == "Удалить категорию"));
 
             // --- Запуск ---
             mainMenu.Show();

@@ -41,7 +41,7 @@ namespace Presentation.Commands
 
             // --- Вывод результата ---
             AnsiConsole.WriteLine();
-            AnsiConsole.MarkupLine("[bold yellow]Банковский счёт удален![/]");
+            AnsiConsole.MarkupLine("[bold yellow]Банковский счёт успешно удален![/]");
             AnsiConsole.WriteLine();
         }
     }
