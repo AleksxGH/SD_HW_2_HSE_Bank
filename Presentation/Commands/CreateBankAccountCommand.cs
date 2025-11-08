@@ -17,7 +17,7 @@ namespace Presentation.Commands
 
         public void Execute()
         {
-            bool enterFlag = false;
+            bool enterFlag;
             string name;
             decimal amount;
 

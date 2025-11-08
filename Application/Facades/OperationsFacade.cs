@@ -143,10 +143,7 @@ namespace Application.Facades
 
         private void RecalculateBankAccountBalance(Guid bankAccountId)
         {
-            var account = _accountsRepository.GetById(bankAccountId);
-            if (account == null)
-                throw new ArgumentException($"Счет не найден.");
-
+            var account = _accountsRepository.GetById(bankAccountId) ?? throw new ArgumentException($"Счет не найден.");
             var operations = _operationsRepository.GetOperationsByBankAccountId(bankAccountId);
 
             decimal newBalance = 0;

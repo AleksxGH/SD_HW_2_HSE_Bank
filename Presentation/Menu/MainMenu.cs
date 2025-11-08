@@ -103,7 +103,7 @@ namespace Presentation.Menu
         /// <summary>
         /// Выполнение команды с обработкой ошибок и выводом результата.
         /// </summary>
-        private void ExecuteCommand(ICommand command)
+        private static void ExecuteCommand(ICommand command)
         {
             try
             {
