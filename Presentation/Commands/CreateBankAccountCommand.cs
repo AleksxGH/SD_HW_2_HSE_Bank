@@ -1,10 +1,12 @@
 ﻿using Presentation.Commands.Interfaces;
 using Application.Facades.Interfaces;
-using Application.Facades;
 using Spectre.Console;
 
 namespace Presentation.Commands
 {
+    /// <summary>
+    /// Команда для создания нового банковского счёта.
+    /// </summary>
     public class CreateBankAccountCommand : ICommand
     {
         private readonly IBankAccountsFacade _facade;
@@ -17,59 +19,65 @@ namespace Presentation.Commands
 
         public void Execute()
         {
-            bool enterFlag;
+            // --- Ввод названия счёта ---
             string name;
-            decimal amount;
-
-            do
+            while (true)
             {
                 AnsiConsole.Markup("[white]Введите название счёта:[/] ");
-                name = Console.ReadLine()!;
-                enterFlag = !string.IsNullOrWhiteSpace(name);
-                if (!enterFlag)
-                {
-                    AnsiConsole.MarkupLine("[red]Ошибка: Банковский счет должен иметь название.[/]");
-                }
-                else
-                {
-                    break;
-                }
-            } while (!enterFlag);
+                name = Console.ReadLine()?.Trim() ?? string.Empty;
 
-            do
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    AnsiConsole.MarkupLine("[red]Ошибка: Название счёта не может быть пустым.[/]");
+                    continue;
+                }
+
+                if (_facade.TryGetBankAccount(name) != null)
+                {
+                    AnsiConsole.MarkupLine("[red]Ошибка: Счёт с таким названием уже существует.[/]");
+                    continue;
+                }
+
+                break;
+            }
+
+            // --- Ввод начального баланса ---
+            decimal initialBalance;
+            while (true)
             {
                 AnsiConsole.Markup("[white]Введите начальный баланс:[/] ");
-                string? amountStr = Console.ReadLine();
-                enterFlag = decimal.TryParse(amountStr, out amount);
-                if (!enterFlag)
+                var input = Console.ReadLine();
+
+                if (!decimal.TryParse(input, out initialBalance))
                 {
-                    AnsiConsole.MarkupLine("[red]Ошибка: введите корректное числовое значение для баланса.[/]");
+                    AnsiConsole.MarkupLine("[red]Ошибка: Введите корректное число.[/]");
+                    continue;
                 }
-                else
-                {
-                    break;
-                }
-            } while (!enterFlag);
 
+                break;
+            }
 
-            var account = _facade.CreateBankAccount(name, amount);
+            // --- Создание счёта ---
+            var account = _facade.CreateBankAccount(name, initialBalance);
 
+            // --- Отображение результата ---
             var table = new Table()
                 .Border(TableBorder.Rounded)
-                .Title("[white]Новый банковский счёт создан успешно![/]")
-                .AddColumn("[teal]Название[/]")
-                .AddColumn("[teal]ID[/]")
-                .AddColumn("[teal]Баланс[/]");
+                .Expand()
+                .Centered()
+                .Title("[bold white]Новый банковский счёт создан успешно![/]")
+                .AddColumn("[bold teal]Название[/]")
+                .AddColumn("[bold teal]ID[/]")
+                .AddColumn("[bold teal]Баланс[/]");
 
             table.AddRow(
                 $"[grey]{account.Name}[/]",
                 $"[grey]{account.Id}[/]",
-                $"[grey]{account.Balance}[/]"
+                $"[grey]{account.Balance:F2}[/]"
             );
 
             AnsiConsole.WriteLine();
             AnsiConsole.Write(table);
-            AnsiConsole.WriteLine();
         }
     }
 }

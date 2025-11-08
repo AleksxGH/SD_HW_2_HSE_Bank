@@ -35,23 +35,33 @@ namespace HSE_Bank
             services.AddSingleton<IOperationsFacade, OperationsFacade>();
 
             // --- Меню ---
-            services.AddSingleton<IMenu, MainMenu>();          // главное меню
             services.AddSingleton<MainMenu>();
+            services.AddSingleton<IMenu>(sp => sp.GetRequiredService<MainMenu>());
             services.AddTransient<ImportMenu>();
             services.AddTransient<BankAccountsMenu>();
             services.AddTransient<CategoriesMenu>();
             services.AddTransient<OperationsMenu>();
             services.AddTransient<ExportMenu>();
 
-            // --- Команды ---
+            // --- Команды и декораторы ---
             services.AddTransient<CreateBankAccountCommand>();
+            services.AddTransient<ViewAllBankAccountsCommand>();
+            services.AddTransient<RenameBankAccountCommand>();
+            services.AddTransient<DeleteBankAccountCommand>();
+
+            // Регистрируем декорированные команды как ICommand
             services.AddTransient<ICommand>(sp =>
                 new TimedCommandDecorator(sp.GetRequiredService<CreateBankAccountCommand>()));
+            services.AddTransient<ICommand>(sp =>
+                new TimedCommandDecorator(sp.GetRequiredService<ViewAllBankAccountsCommand>()));
+            services.AddTransient<ICommand>(sp =>
+                new TimedCommandDecorator(sp.GetRequiredService<RenameBankAccountCommand>()));
+            services.AddTransient<ICommand>(sp =>
+                new TimedCommandDecorator(sp.GetRequiredService<DeleteBankAccountCommand>()));
 
-            // --- Собираем DI-контейнер ---
             var provider = services.BuildServiceProvider();
 
-            // --- Получаем зависимости ---
+            // --- Получаем меню ---
             var mainMenu = provider.GetRequiredService<MainMenu>();
             var importMenu = provider.GetRequiredService<ImportMenu>();
             var accountsMenu = provider.GetRequiredService<BankAccountsMenu>();
@@ -66,9 +76,14 @@ namespace HSE_Bank
             mainMenu.AddSection(operationsMenu);
             mainMenu.AddSection(exportMenu);
 
-            // Добавляем команды (через DI)
-            var createAccountCommand = provider.GetRequiredService<ICommand>();
-            accountsMenu.AddCommand(createAccountCommand);
+            // --- Получаем все декорированные команды ---
+            var decoratedCommands = provider.GetServices<ICommand>().ToList();
+
+            // Добавляем нужные команды в меню
+            accountsMenu.AddCommand(decoratedCommands.First(c => c.Name == "Создать новый банковский счет"));
+            accountsMenu.AddCommand(decoratedCommands.First(c => c.Name == "Просмотреть все банковские счета"));
+            accountsMenu.AddCommand(decoratedCommands.First(c => c.Name == "Переименовать банковский счет"));
+            accountsMenu.AddCommand(decoratedCommands.First(c => c.Name == "Удалить банковский счет"));
 
             // --- Запуск ---
             mainMenu.Show();
