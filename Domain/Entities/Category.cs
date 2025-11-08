@@ -6,7 +6,7 @@ namespace Domain.Entities
     /// <summary>
     /// Класс категории банковской операции.
     /// </summary>
-    public class Category : ICategory
+    public class Category : ICategory, IVisitable
     {
         /// <summary>
         /// Уникальный идентификатор категории.
@@ -62,6 +62,11 @@ namespace Domain.Entities
         public void ChangeType(CategoryType newType)
         {
             Type = newType;
+        }
+
+        public void Accept(IVisitor visitor)
+        {
+            visitor.Visit(this);
         }
     }
 }

@@ -10,6 +10,8 @@ using Application.Facades.Interfaces;
 using Application.Facades;
 using Presentation.Menu.Interfaces;
 using Presentation.Commands.Interfaces;
+using Application.Export.Template;
+using Application.Export;
 
 namespace HSE_Bank
 {
@@ -42,6 +44,22 @@ namespace HSE_Bank
             services.AddTransient<CategoriesMenu>();
             services.AddTransient<OperationsMenu>();
             services.AddTransient<ExportMenu>();
+
+            // --- Экспорт ---
+            services.AddTransient<JsonExporter>(sp =>
+            {
+                string outputFolder = Path.Combine(Directory.GetCurrentDirectory(), "Exports");
+                return new JsonExporter(outputFolder);
+            });
+
+            services.AddTransient<ExportJsonCommand>(sp =>
+            new ExportJsonCommand(
+                sp.GetRequiredService<JsonExporter>(), // конкретный класс
+                sp.GetRequiredService<IBankAccountsRepository>(),
+                sp.GetRequiredService<ICategoriesRepository>(),
+                sp.GetRequiredService<IOperationsRepository>()
+            ));
+
 
             // --- Команды и декораторы ---
             services.AddTransient<CreateBankAccountCommand>();
@@ -78,6 +96,8 @@ namespace HSE_Bank
             services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<ChangeOperationTypeCommand>()));
             services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<ChangeOperationsAccountCommand>()));
             services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<ChangeOperationsAmountCommand>()));
+
+            services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<ExportJsonCommand>()));
 
             var provider = services.BuildServiceProvider();
 
@@ -116,6 +136,8 @@ namespace HSE_Bank
             operationsMenu.AddCommand(decoratedCommands.First(c => c.Name == "Изменить счет операции"));
             operationsMenu.AddCommand(decoratedCommands.First(c => c.Name == "Изменить тип операции"));
             operationsMenu.AddCommand(decoratedCommands.First(c => c.Name == "Изменить сумму операции"));
+
+            exportMenu.AddCommand(decoratedCommands.First(c => c.Name == "Экспортировать данные в JSON"));
 
             // --- Запуск ---
             mainMenu.Show();

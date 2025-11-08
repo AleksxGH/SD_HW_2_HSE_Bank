@@ -6,7 +6,7 @@ namespace Domain.Entities
     /// <summary>
     /// Класс банковской операции.
     /// </summary>
-    public class Operation : IOperation
+    public class Operation : IOperation, IVisitable
     {
         /// <summary>
         /// Уникальный идентификатор операции.
@@ -136,6 +136,11 @@ namespace Domain.Entities
         public void ChangeDescription(string? newDescription)
         {
             Description = newDescription;
+        }
+
+        public void Accept(IVisitor visitor)
+        {
+            visitor.Visit(this);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Domain.Entities
     /// <summary>
     /// Класс банковского счета.
     /// </summary>
-    public class BankAccount : IBankAccount
+    public class BankAccount : IBankAccount, IVisitable
     {
         /// <summary>
         /// Уникальный идентификатор счёта.
@@ -81,6 +81,11 @@ namespace Domain.Entities
         public void Withdraw(decimal amount)
         {
             Balance -= amount;
+        }
+
+        public void Accept(IVisitor visitor)
+        {
+            visitor.Visit(this);
         }
     }
 }
