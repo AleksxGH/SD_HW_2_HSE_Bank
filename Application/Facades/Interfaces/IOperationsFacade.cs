@@ -1,5 +1,6 @@
 ﻿using Domain.Entities.Interfaces;
 using Domain.Enums;
+using Infrastructure.Repositories.Interfaces;
 
 namespace Application.Facades.Interfaces
 {
@@ -102,5 +103,26 @@ namespace Application.Facades.Interfaces
         /// <param name="id"></param>
         /// <returns></returns>
         bool DeleteOperation(Guid id);
+
+        /// <summary>
+        /// Метод проверки существования операции по идентификатору
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool OperationExists(Guid id);
+
+        /// <summary>
+        /// Метод проверки существования банковского счета
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public IBankAccount? TryGetBankAccount(string data);
+
+        /// <summary>
+        /// Метод проверки существования категории
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ICategory? TryGetCategory(string data);
     }
 }

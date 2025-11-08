@@ -48,24 +48,36 @@ namespace HSE_Bank
             services.AddTransient<ViewAllBankAccountsCommand>();
             services.AddTransient<RenameBankAccountCommand>();
             services.AddTransient<DeleteBankAccountCommand>();
+
             services.AddTransient<CreateCategoryCommand>();
             services.AddTransient<ViewAllCategoriesCommand>();
             services.AddTransient<RenameCategoryCommand>();
             services.AddTransient<ChangeCategoryTypeCommand>();
             services.AddTransient<DeleteCategoryCommand>();
 
+            services.AddTransient<CreateOperationCommand>();
+            services.AddTransient<ViewAllOperationsCommand>();
+            services.AddTransient<ChangeOperationTypeCommand>();
+            services.AddTransient<ChangeOperationsAccountCommand>();
+            services.AddTransient<ChangeOperationsAmountCommand>();
+
             // Регистрируем декорированные команды как ICommand
             services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<CreateBankAccountCommand>()));
             services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<ViewAllBankAccountsCommand>()));
             services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<RenameBankAccountCommand>()));
             services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<DeleteBankAccountCommand>()));
+
             services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<CreateCategoryCommand>()));
             services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<ViewAllCategoriesCommand>()));
             services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<RenameCategoryCommand>()));
             services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<ChangeCategoryTypeCommand>()));
             services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<DeleteCategoryCommand>()));
 
-
+            services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<CreateOperationCommand>()));
+            services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<ViewAllOperationsCommand>()));
+            services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<ChangeOperationTypeCommand>()));
+            services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<ChangeOperationsAccountCommand>()));
+            services.AddTransient<ICommand>(sp => new TimedCommandDecorator(sp.GetRequiredService<ChangeOperationsAmountCommand>()));
 
             var provider = services.BuildServiceProvider();
 
@@ -92,11 +104,18 @@ namespace HSE_Bank
             accountsMenu.AddCommand(decoratedCommands.First(c => c.Name == "Просмотреть все банковские счета"));
             accountsMenu.AddCommand(decoratedCommands.First(c => c.Name == "Переименовать банковский счет"));
             accountsMenu.AddCommand(decoratedCommands.First(c => c.Name == "Удалить банковский счет"));
+
             categoriesMenu.AddCommand(decoratedCommands.First(c => c.Name == "Создать новую категорию"));
             categoriesMenu.AddCommand(decoratedCommands.First(c => c.Name == "Просмотреть все категории"));
             categoriesMenu.AddCommand(decoratedCommands.First(c => c.Name == "Переименовать категорию"));
             categoriesMenu.AddCommand(decoratedCommands.First(c => c.Name == "Изменить тип категории"));
             categoriesMenu.AddCommand(decoratedCommands.First(c => c.Name == "Удалить категорию"));
+
+            operationsMenu.AddCommand(decoratedCommands.First(c => c.Name == "Создать новую банковскую операцию"));
+            operationsMenu.AddCommand(decoratedCommands.First(c => c.Name == "Просмотреть все банковские операции"));
+            operationsMenu.AddCommand(decoratedCommands.First(c => c.Name == "Изменить счет операции"));
+            operationsMenu.AddCommand(decoratedCommands.First(c => c.Name == "Изменить тип операции"));
+            operationsMenu.AddCommand(decoratedCommands.First(c => c.Name == "Изменить сумму операции"));
 
             // --- Запуск ---
             mainMenu.Show();

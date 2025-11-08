@@ -4,6 +4,7 @@ using Domain.Enums;
 using Infrastructure.Repositories.Interfaces;
 using Application.Facades.Interfaces;
 using Domain.Entities;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Application.Facades
 {
@@ -193,8 +194,10 @@ namespace Application.Facades
             var operation = _operationsRepository.GetById(operationId);
             if (operation != null)
             {
+                var oldBankAccountId = operation.BankAccountId;
                 operation.ChangeBankAccountId(bankAccountId);
                 _operationsRepository.Update(operation);
+                RecalculateBankAccountBalance(oldBankAccountId);
                 RecalculateBankAccountBalance(operation.BankAccountId);
                 return;
             }
@@ -292,6 +295,36 @@ namespace Application.Facades
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Метод проверки существования операции по идентификатору
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool OperationExists(Guid id)
+        {
+            return _operationsRepository.Exists(id);
+        }
+
+        /// <summary>
+        /// Метод проверки существования банковского счета
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public IBankAccount? TryGetBankAccount(string data)
+        {
+            return _accountsRepository.TryGet(data);
+        }
+
+        /// <summary>
+        /// Метод проверки существования категории
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public ICategory? TryGetCategory(string data)
+        {
+            return _categoriesRepository.TryGet(data);
         }
     }
 }
