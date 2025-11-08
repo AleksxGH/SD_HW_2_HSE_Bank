@@ -40,14 +40,14 @@ namespace HSE_Bank
             var operations = provider.GetRequiredService<IOperationsFacade>();
 
             // Меню
-            var menu = new Menu();
-
-            // Добавляем команды с декоратором
-            menu.AddCommand(new TimedCommandDecorator(new CreateBankAccountCommand(accounts)));
-
+            var mainMenu = new MainMenu();
+            var accountsMenu = new BankAccountsMenu();
+            
+            mainMenu.AddSection(accountsMenu);
+            accountsMenu.AddCommand(new TimedCommandDecorator(new CreateBankAccountCommand(accounts)));
 
             // Запуск
-            menu.Run();
+            mainMenu.Show();
         }
     }
 }
