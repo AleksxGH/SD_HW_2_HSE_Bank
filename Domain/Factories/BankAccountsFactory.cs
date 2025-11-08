@@ -7,7 +7,7 @@ namespace Domain.Factories
     /// <summary>
     /// Класс-фабрика для создания и восстановления банковских счетов
     /// </summary>
-    public class BankAccountFactory : IBankAccountFactory
+    public class BankAccountsFactory : IBankAccountsFactory
     {
         /// <summary>
         /// Создать новый банковский счёт

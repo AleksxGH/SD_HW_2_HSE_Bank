@@ -6,7 +6,7 @@ namespace Domain.Factories.Interfaces
     /// <summary>
     /// Интерфейс фабрики категорий операций
     /// </summary>
-    public interface ICategoryFactory
+    public interface ICategoriesFactory
     {
         /// <summary>
         /// Метод создания новой категории

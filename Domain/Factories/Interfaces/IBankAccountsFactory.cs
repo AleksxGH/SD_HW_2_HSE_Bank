@@ -5,7 +5,7 @@ namespace Domain.Factories.Interfaces
     /// <summary>
     /// Интерфейс фабрики банковских счетов
     /// </summary>
-    public interface IBankAccountFactory
+    public interface IBankAccountsFactory
     {
         /// <summary>
         /// Создать новый банковский счёт

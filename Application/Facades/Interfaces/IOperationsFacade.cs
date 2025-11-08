@@ -21,7 +21,7 @@ namespace Application.Facades.Interfaces
         /// <param name="name"></param>
         /// <param name="initialBalance"></param>
         /// <returns></returns>
-        IOperation CreateOperation(string name, decimal initialBalance);
+        IOperation CreateOperation(OperationType type, Guid accountId, decimal amount, Guid categoryId, string? description = null);
 
         /// <summary>
         /// Метод восстановления операции
@@ -30,7 +30,8 @@ namespace Application.Facades.Interfaces
         /// <param name="name"></param>
         /// <param name="balance"></param>
         /// <returns></returns>
-        IOperation RestoreOperation(Guid id, string name, decimal balance);
+        IOperation RestoreOperation(Guid id, OperationType type, Guid accountId, decimal amount,
+            DateTime date, Guid categoryId, string? description = null);
 
         /// <summary>
         /// Метод получения операции по идентификатору

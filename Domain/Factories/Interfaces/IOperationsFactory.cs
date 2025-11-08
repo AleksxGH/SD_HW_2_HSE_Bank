@@ -3,7 +3,7 @@ using Domain.Enums;
 
 namespace Domain.Factories.Interfaces
 {
-    public interface IOperationFactory
+    public interface IOperationsFactory
     {
         /// <summary>
         /// Метод создания новой операции

@@ -8,7 +8,7 @@ namespace Domain.Factories
     /// <summary>
     /// Класс-фабрика для создания и восстановления банковских операций
     /// </summary>
-    public class OperationFactory : IOperationFactory
+    public class OperationsFactory : IOperationsFactory
     {
         /// <summary>
         /// Метод создания новой операции

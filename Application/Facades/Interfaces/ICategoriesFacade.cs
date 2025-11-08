@@ -57,7 +57,7 @@ namespace Application.Facades.Interfaces
         /// </summary>
         /// <param name="id"></param>
         /// <param name="newBalance"></param>
-        void UpdateCategoryType(Guid id, decimal newBalance);
+        void UpdateCategoryType(Guid id, CategoryType newType);
 
         /// <summary>
         /// Метод удаления категории

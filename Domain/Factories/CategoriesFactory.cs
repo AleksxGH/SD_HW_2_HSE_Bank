@@ -8,7 +8,7 @@ namespace Domain.Factories
     /// <summary>
     /// Класс-фабрикa для создания и восстановления категорий операций
     /// </summary>
-    public class CategoryFactory : ICategoryFactory
+    public class CategoriesFactory : ICategoriesFactory
     {
         /// <summary>
         /// Метод создания новой категории
